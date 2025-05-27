@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 
 import db.DB;
 import db.DbException;
+import db.DbIntegrityException;
 
 public class Program {
 
@@ -22,20 +23,18 @@ public class Program {
 			conn = DB.getConnection();
 			
 			st = conn.prepareStatement(
-					"UPDATE seller "
-					+ "SET BaseSalary = BaseSalary + ? "
+					"DELETE FROM department "
 					+ "WHERE "
-					+ "(DepartmentId = ?)");
+					+ "Id = ?");
+			st.setInt(1, 2);
 			
-			st.setDouble(1, 200.0);
-			st.setInt(2, 2);
 			
 			int rowsAffected = st.executeUpdate();
 			
 			System.out.println("Done! Rows Affected: "  + rowsAffected);
 		}
 		catch (SQLException e) {
-			e.printStackTrace();
+			throw new DbIntegrityException(e.getMessage());
 		}
 		finally{
 			DB.closeStatement(st);
